@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Liste d'utilisateurs</title>
+</head>
+<body>
+    <h1>Liste d'utilisateurs</h1>
+    <button id="randomUserButton">Afficher un utilisateur au hasard</button>
+    <ul id="userList">
+        
+    </ul>
+
+    <script>
+        // Fonction pour récupérer les données de l'API et les afficher
+        function fetchUserList() {
+            fetch('https://randomuser.me/api/?results=100')
+                .then(response => response.json())
+                .then(data => {
+                    const userList = data.results;
+                    const userListElement = document.getElementById('userList');
+
+                    // Parcourir la liste d'utilisateurs et afficher les informations souhaitées
+                    userList.forEach(user => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <img src="${user.picture.thumbnail}" alt="Photo de profil">
+                            <strong>${user.name.first} ${user.name.last}</strong>
+                            <br>
+                            Téléphone : ${user.phone}
+                        `;
+                        userListElement.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données :', error));
+        }
+
+        // Appeler la fonction pour afficher la liste d'utilisateurs au chargement de la page
+        fetchUserList();
+
+        // Ajouter un gestionnaire d'événement pour le bouton "Afficher un utilisateur au hasard"
+        const randomUserButton = document.getElementById('randomUserButton');
+        randomUserButton.addEventListener('click', () => {
+            const userListElements = document.querySelectorAll('#userList li');
+            if (userListElements.length > 0) {
+                const randomIndex = Math.floor(Math.random() * userListElements.length);
+                const randomUser = userListElements[randomIndex];
+                alert(randomUser.textContent);
+            } else {
+                alert("La liste d'utilisateurs est vide. Veuillez la charger d'abord.");
+            }
+        });
+    </script>
+</body>
+</html>
